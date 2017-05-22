@@ -10,15 +10,23 @@ RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		curl \
 		unzip \
-		ca-certificates
+		ca-certificates \
+		apt-transport-https
+
+RUN dpkg --add-architecture i386
+RUN curl 'https://dl.winehq.org/wine-builds/Release.key' -o Release.key
+RUN apt-key add Release.key
+RUN echo "deb https://dl.winehq.org/wine-builds/debian/ jessie main" >> /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get install -y winehq-devel
 
 # Install wine and related packages
-RUN dpkg --add-architecture i386 \
-		&& apt-get update \
-		&& apt-get install -y --no-install-recommends \
-				wine \
-				wine32 \
-		&& rm -rf /var/lib/apt/lists/*
+#RUN dpkg --add-architecture i386 \
+#		&& apt-get update \
+#		&& apt-get install -y --no-install-recommends \
+#				wine \
+#				wine32 \
+#		&& rm -rf /var/lib/apt/lists/*
 
 # Use the latest version of winetricks
 RUN curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks \
